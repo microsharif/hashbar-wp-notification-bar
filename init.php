@@ -89,10 +89,10 @@ function hashbar_wpnb_load_notification_to_footer(){
         $where_to_show = get_post_meta( $post_id , '_wphash_notification_where_to_show', true );
 
         if($where_to_show  == 'custom'){
-             $where_to_show_custom =  get_post_meta( $post_id , '_wphash_notification_where_to_show_custom', true );
+            $where_to_show_custom =  get_post_meta( $post_id , '_wphash_notification_where_to_show_custom', true );
 
-             if(!empty($where_to_show_custom)){
-                 foreach( $where_to_show_custom as $item){
+            if(!empty($where_to_show_custom)){
+                foreach( $where_to_show_custom as $item){
                     if(is_front_page() && $item == 'home'){
                        hashbar_wpnb_output($post_id);
                     }
@@ -104,8 +104,8 @@ function hashbar_wpnb_load_notification_to_footer(){
                     if(is_page() && $item == 'page' ){
                        hashbar_wpnb_output($post_id);
                     }
-                 }
-             }
+                }
+            }
 
         } elseif ($where_to_show  == 'everywhere' ){
         	
@@ -144,6 +144,10 @@ function hashbar_wpnb_output($post_id){
     $content_bg_image = get_post_meta( $post_id, '_wphash_notification_content_bg_image', true );
     $content_bg_opacity = get_post_meta( $post_id, '_wphash_notification_content_bg_opcacity', true );
 
+    //margin and padding
+    $margin = get_post_meta($post_id,'_wphash_notification_content_margin');
+    $padding = get_post_meta($post_id,'_wphash_notification_content_padding');
+
     //button options
     $close_button = get_post_meta( $post_id, '_wphash_notification_close_button', true );
     $button_text = get_post_meta( $post_id, '_wphash_notification_close_button_text', true );
@@ -177,6 +181,18 @@ function hashbar_wpnb_output($post_id){
     if(!empty($content_bg_opacity)){
         $css_style .= "#notification-$post_id::before{opacity:$content_bg_opacity}";
     }
+
+    if($margin && is_array($margin[0])){
+        $css_style .= "#notification-$post_id .ht-notification-text{margin:".$margin[0]['margin_top']." ".$margin[0]['margin_right']." ".$margin[0]['margin_bottom']." ".$margin[0]['margin_left']."}";
+    }
+
+    if($padding && is_array($padding[0])){
+        $css_style .= "#notification-$post_id .ht-notification-text{padding:".$padding[0]['padding_top']." ".$padding[0]['padding_right']." ".$padding[0]['padding_bottom']." ".$padding[0]['padding_left']."}";
+    }
+
+    /*if($padding && is_array($padding[0])){
+        $css_style .= ".ht-notification-text{width:$width}";
+    }*/
 
     $css_style .= "#notification-$post_id{width:$width}";
     $css_style .= "#notification-$post_id .ht-n-close-toggle{background-color:$close_button_bg_color}";

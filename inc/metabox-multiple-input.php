@@ -49,7 +49,7 @@
 	    ) ); ?>
 	</div>
 	<div class="clear"></div>
-	<p style="display: block;"><?php echo esc_html__('Give margin top, right, bottom, left of contnt. Use unit px. Default 0px 0px 0px 5px','hashbar') ?></p>
+	<p style="display: block;"><?php echo esc_html__('Give margin top, right, bottom, left of contnt. Use unit px. Sample: 5px 5px 5px 5px','hashbar') ?></p>
 	<?php
 	}
 
@@ -100,7 +100,7 @@
 	    ) ); ?>
 	</div>
 	<div class="clear"></div>
-	<p style="display: block;"><?php echo esc_html__('Give padding top, right, bottom, left of contnt. Use unit px. Default 0px 0px 0px 5px','hashbar') ?></p>
+	<p style="display: block;"><?php echo esc_html__('Give padding top, right, bottom, left of contnt. Use unit px. Sample: 5px 5px 5px 5px','hashbar') ?></p>
 	<?php
 	}
 
