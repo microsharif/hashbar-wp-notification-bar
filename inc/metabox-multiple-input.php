@@ -1,8 +1,7 @@
 <?php 
 	/**
-	 * CMB2 Select Multiple Custom Field Type
-	 * @package CMB2 Select Multiple Field Type
-	 */
+	 * CMB2 Multiple Custom input Field Type
+	*/
 
 	function hashbar_wpnb_contetn_margin( $field, $value, $object_id, $object_type, $field_type ) {
 	$value = wp_parse_args( $value, array(
@@ -50,10 +49,61 @@
 	    ) ); ?>
 	</div>
 	<div class="clear"></div>
-	<p style="display: block;"><?php echo esc_html__('Give margin top, right, bottom, left of call number. Use unit px. Default 0px 0px 0px 5px','hashbar') ?></p>
+	<p style="display: block;"><?php echo esc_html__('Give margin top, right, bottom, left of contnt. Use unit px. Default 0px 0px 0px 5px','hashbar') ?></p>
 	<?php
 	}
 
 	add_filter( 'cmb2_render_margin_inpupt', 'hashbar_wpnb_contetn_margin', 10, 5 );
+
+	function hashbar_wpnb_contetn_padding( $field, $value, $object_id, $object_type, $field_type ) {
+	$value = wp_parse_args( $value, array(
+	    'padding_top' => '',
+	    'padding_right' => '',
+	    'padding_bottom'  => '',
+	    'padding_left'  => '',
+	) );
+	?>
+	<div class="alignleft" style="width: 60px;margin-right:10px;">
+	    <?php echo $field_type->input( array(
+	        'class'   => 'cmb_text_small',
+	        'name'    => $field_type->_name( '[padding_top]' ),
+	        'id'      => $field_type->_id( '_padding_top' ),
+	        'type'    => 'text',
+	        'value'   => $value['padding_top']
+	    ) ); ?>
+	</div>
+	<div class="alignleft" style="width: 60px;margin-right:10px;">
+	    <?php echo $field_type->input( array(
+	        'class' => 'cmb_text_small',
+	        'name'  => $field_type->_name( '[padding_right]' ),
+	        'id'    => $field_type->_id( '_padding_right' ),
+	        'type'  => 'text',
+	        'value' => $value['padding_right'],
+	    ) ); ?>
+	</div>
+	<div class="alignleft" style="width: 60px;margin-right:10px;">
+	    <?php echo $field_type->input( array(
+	        'class' => 'cmb_text_small',
+	        'name'  => $field_type->_name( '[padding_bottom]' ),
+	        'id'    => $field_type->_id( '_padding_bottom' ),
+	        'type'  => 'text',
+	        'value' => $value['padding_bottom'],
+	    ) ); ?>
+	</div>
+	<div class="alignleft" style="width: 60px;margin-right:10px;">
+	    <?php echo $field_type->input( array(
+	        'class' => 'cmb_text_small',
+	        'name'  => $field_type->_name( '[padding_left]' ),
+	        'id'    => $field_type->_id( '_padding_left' ),
+	        'type'  => 'text',
+	        'value' => $value['padding_left'],
+	    ) ); ?>
+	</div>
+	<div class="clear"></div>
+	<p style="display: block;"><?php echo esc_html__('Give padding top, right, bottom, left of contnt. Use unit px. Default 0px 0px 0px 5px','hashbar') ?></p>
+	<?php
+	}
+
+	add_filter( 'cmb2_render_padding_inpupt', 'hashbar_wpnb_contetn_padding', 10, 5 );
 
 ?>

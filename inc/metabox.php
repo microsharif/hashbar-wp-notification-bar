@@ -183,6 +183,12 @@ if( ! function_exists('hashbar_wpnb_meta_boxes') ){
 		) );
 
 		$meta_box->add_field( array(
+			'id'   => $prefix.'notification_content_padding',
+			'name' => esc_html__( 'Content Padding', 'hashbar' ),
+			'type' => 'padding_inpupt'
+		) );
+
+		$meta_box->add_field( array(
 			'id'   => $prefix.'notification_how_many_times_to_show',
 			'name' => esc_html__( 'How many time to show notification', 'hashbar' ),
 			'type' => 'text',
