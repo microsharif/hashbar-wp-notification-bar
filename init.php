@@ -15,6 +15,7 @@
 // define path
 define( 'HASHBAR_WPNB_URI', plugins_url('', __FILE__) );
 define( 'HASHBAR_WPNB_DIR', dirname( __FILE__ ) );
+define( 'HASHBAR_WPNB_ROOT', __FILE__ );
 
 // include all files
 if ( ! function_exists('is_plugin_active') ){ include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); }
@@ -23,7 +24,8 @@ include_once( HASHBAR_WPNB_DIR. '/inc/custom-posts.php');
 include_once( HASHBAR_WPNB_DIR. '/admin/cmb2/init.php');
 
 if(!is_plugin_active( 'hashbar-pro/init.php' )){
-	include_once( HASHBAR_WPNB_DIR. '/inc/shortcode.php');
+    include_once( HASHBAR_WPNB_DIR. '/inc/shortcode.php');
+	include_once( HASHBAR_WPNB_DIR. '/inc/block-init.php');
 	include_once( HASHBAR_WPNB_DIR. '/admin/plugin-options.php');
 	add_action( 'cmb2_admin_init', 'hashbar_wpnb_add_metabox' );
 	add_action( 'admin_enqueue_scripts','hashbar_wpnb_admin_enqueue_scripts');

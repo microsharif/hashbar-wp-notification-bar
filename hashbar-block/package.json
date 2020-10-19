@@ -1,0 +1,17 @@
+{
+	"name": "ht-block",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"start": "cgb-scripts start",
+		"build": "cgb-scripts build",
+		"eject": "cgb-scripts eject"
+	},
+	"dependencies": {
+		"cgb-scripts": "1.23.1"
+	},
+	"description": "ht gutenberg block",
+	"main": "index.js",
+	"author": "Raju Ahammad",
+	"license": "MIT"
+}
