@@ -5,7 +5,7 @@ import "./style.scss";
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const { Fragment } = wp.element;
-const { Button, TextControl, TextareaControl, Dashicon, PanelBody  }     = wp.components;
+const { Button, TextControl, TextareaControl, Dashicon, PanelBody, panelRow, FormToggle, RadioControl  }= wp.components;
 const { InspectorControls, ColorPalette} = wp.editor;
 
 
@@ -31,7 +31,12 @@ registerBlockType("hashbar/hashbar-button", {
 			}
 		},
 		hashbarBtnRemove:{
-			type:"boolean"
+			type:"boolean",
+			default:true
+		},
+		hashbarBtnPosition:{
+			type:"string",
+			default:"before"
 		},
 		hashbarContent:{
 			type:"string"
@@ -50,15 +55,23 @@ registerBlockType("hashbar/hashbar-button", {
 	},
 
 	edit: ({ attributes, setAttributes, className, isSelected }) => {
-		console.log(attributes.hasbarButton.text)
+
 		const onChangBtnText = (newBtnText) => {
 			const newhasbarButton = {...attributes.hasbarButton};
 			newhasbarButton.text = newBtnText;
 			setAttributes({hasbarButton:newhasbarButton});
 		}
 
+		const ToggelButton = () => {
+			setAttributes({hashbarBtnRemove:!attributes.hashbarBtnRemove})
+		}
+
 		const onChangeContent = (newContent) => {
 			setAttributes({hashbarContent:newContent})
+		}
+
+		const onChangePosition = (newBtnPositon) => {
+			setAttributes({hashbarBtnPosition:newBtnPositon});
 		}
 
 		const onChangeBtnMargin = (NewBtnMargin) => {
@@ -87,6 +100,21 @@ registerBlockType("hashbar/hashbar-button", {
 			<Fragment>
 				<InspectorControls>
 					<PanelBody title="Button Settings">
+						<div className="btn-appear-wrap" style={{marginBottom:30}}>
+							<label htmlFor="switch-btn-enable">
+								Button Enable
+							</label>
+							<FormToggle id='switch-btn-enable' 
+							checked={attributes.hashbarBtnRemove} onChange={ToggelButton}/>
+						</div>
+						<RadioControl
+	                        label="Select Button Positon"
+	                        selected={ attributes.hashbarBtnPosition }
+	                        options={[
+	                            { label: 'Before Content', value: 'before' },
+	                            { label: 'After Cotent', value: 'after' },
+	                        ]}
+	                        onChange={onChangePosition} />
 						<div className="panel-item">
 							<TextControl
 								label="Button Text"
@@ -104,14 +132,14 @@ registerBlockType("hashbar/hashbar-button", {
 								label="Margin Right"
 								placeholder="0px"
 								value={attributes.hashbarBtnMargin}
-								onChange={onChangeContent}
+								onChange={onChangeBtnMargin}
 								style={{ marginBottom: 20}}
 							/>
 							<TextareaControl
 								label="Hashbar content"
 								help="Enter Notification Content"
-								value={attributes.hashbarContent}
-								onChange={onChangeBtnMargin}
+								value={attributes.hashbarContent}onChangeContent
+								onChange={onChangeContent}
 								style={{ color: attributes.contentColor }}
 							/>
 							<p>
@@ -148,10 +176,27 @@ registerBlockType("hashbar/hashbar-button", {
 					</PanelBody>
 				</InspectorControls>
 				<div className={className}>
-					<div style={{ display:"flex" }}>
-						<a href={attributes.hasbarButton.link}><button style={{backgroundColor:attributes.hasbarBtnBgColor, color:attributes.hasbarBtnTxtColor,marginRight:attributes.hashbarBtnMargin}}>{attributes.hasbarButton.text}</button></a>
-						<p style={{margin:"0px", padding:"0px;"}}>{attributes.hashbarContent}</p>
-					</div>
+					{attributes.hashbarBtnPosition === 'before' ? (
+						<div style={{display:"flex"}}>
+							{attributes.hashbarBtnRemove ? (
+								<a href={attributes.hasbarButton.link}>
+									<button style={{backgroundColor:attributes.hasbarBtnBgColor, color:attributes.hasbarBtnTxtColor,marginRight:attributes.hashbarBtnMargin}}>{attributes.hasbarButton.text}
+									</button>
+								</a>
+							):""}
+							<p style={{margin:"0px", padding:"0px;"}}>{attributes.hashbarContent}</p>
+						</div>
+					):(
+						<div style={{display:"flex"}}>
+							<p style={{margin:"0px", padding:"0px;"}}>{attributes.hashbarContent}</p>
+							{attributes.hashbarBtnRemove ? (
+								<a href={attributes.hasbarButton.link}>
+									<button style={{backgroundColor:attributes.hasbarBtnBgColor, color:attributes.hasbarBtnTxtColor,marginRight:attributes.hashbarBtnMargin}}>{attributes.hasbarButton.text}
+									</button>
+								</a>
+							):""}
+						</div>
+					)}
 				</div>
 			</Fragment>
 		);
