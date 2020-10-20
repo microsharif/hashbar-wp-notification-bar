@@ -28,6 +28,36 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 
+function hashbar_block_render ($attr){
+	var_dump($attr);
+	$btn_style_class = $attr['hashbarBtnStyle'] ? $attr['hashbarBtnStyle'] : 'style_1';
+	$style = "<style>";
+	ob_start()
+	?>
+		<?php if(isset($attr['hashbarBtnPosition'])): ?>
+			<p>
+				<?php if(isset($attr['hashbarContent']) && !empty($attr['hashbarContent'])): 
+					echo esc_html($attr['hashbarContent']); 
+				 endif; ?>
+				<?php if(!isset($attr['hashbarBtnRemove'])): ?>
+					<a class="ht_btn <?php echo esc_attr($btn_style_class); ?>" href="<?php echo $attr['hasbarButton'] ? esc_url($attr['hasbarButton']['link']):'#'; ?>"><?php echo esc_html($attr['hasbarButton']['text']); ?></a>
+				<?php endif; ?>
+			</p>
+		<?php else: ?>
+			<p>
+				<?php if(!isset($attr['hashbarBtnRemove'])): ?>
+					<a class="ht_btn <?php echo esc_attr($btn_style_class); ?>" href="<?php echo $attr['hasbarButton'] ? esc_url($attr['hasbarButton']['link']):'#'; ?>"><?php echo esc_html($attr['hasbarButton']['text']); ?></a>
+				<?php endif; ?>
+				<?php if(isset($attr['hashbarContent']) && !empty($attr['hashbarContent'])): 
+					echo esc_html($attr['hashbarContent']); 
+				 endif; ?>
+			</p>
+		<?php endif; ?>
+	<?php
+		//if((isset($attr['BtnMarginTop']))
+	return ob_get_clean();
+}
+
 function hashbar_block_assets() {
 	// Register block styles for both frontend + backend.
 	wp_register_style(
@@ -86,6 +116,17 @@ function hashbar_block_assets() {
 			'editor_script' => 'hashbar-block-js',
 			// Enqueue blocks.editor.build.css in the editor only.
 			'editor_style'  => 'hashbar-block-editor-css',
+			//render block from server
+			'render_callback' => 'hashbar_block_render',
+			'attributes' => array(
+				'hasbarButton' => array(
+					'type'    => 'string',
+					'default' => array(
+									'text' => 'Button',
+									'link' => '#'
+								),
+				)
+			)
 		)
 	);
 }
