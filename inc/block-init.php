@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 function hashbar_block_render ($attr){
-	var_dump($attr);
+	//var_dump($attr);
 	$btn_style_class = $attr['hashbarBtnStyle'] ? $attr['hashbarBtnStyle'] : 'style_1';
 	$style = "<style>";
 	ob_start()
@@ -39,13 +39,13 @@ function hashbar_block_render ($attr){
 				<?php if(isset($attr['hashbarContent']) && !empty($attr['hashbarContent'])): 
 					echo esc_html($attr['hashbarContent']); 
 				 endif; ?>
-				<?php if(!isset($attr['hashbarBtnRemove'])): ?>
+				<?php if($attr['hashbarBtnRemove'] === 'yes'): ?>
 					<a class="ht_btn <?php echo esc_attr($btn_style_class); ?>" href="<?php echo $attr['hasbarButton'] ? esc_url($attr['hasbarButton']['link']):'#'; ?>"><?php echo esc_html($attr['hasbarButton']['text']); ?></a>
 				<?php endif; ?>
 			</p>
 		<?php else: ?>
 			<p>
-				<?php if(!isset($attr['hashbarBtnRemove'])): ?>
+				<?php if($attr['hashbarBtnRemove'] === 'yes'): ?>
 					<a class="ht_btn <?php echo esc_attr($btn_style_class); ?>" href="<?php echo $attr['hasbarButton'] ? esc_url($attr['hasbarButton']['link']):'#'; ?>"><?php echo esc_html($attr['hasbarButton']['text']); ?></a>
 				<?php endif; ?>
 				<?php if(isset($attr['hashbarContent']) && !empty($attr['hashbarContent'])): 
@@ -54,7 +54,37 @@ function hashbar_block_render ($attr){
 			</p>
 		<?php endif; ?>
 	<?php
-		//if((isset($attr['BtnMarginTop']))
+
+	if(isset($attr['BtnMarginTop']) || isset($attr['BtnMarginRight']) || isset($attr['BtnMarginBottom']) || isset($attr['BtnMarginLeft'])){
+
+		$margin_top 	= isset($attr['BtnMarginTop'])? $attr['BtnMarginTop']:'0';
+		$margin_right   = isset($attr['BtnMarginRight'])? $attr['BtnMarginRight']:'10';
+		$margin_bottom  = isset($attr['BtnMarginBottom'])? $attr['BtnMarginBottom']:'0';
+		$margin_left 	= isset($attr['BtnMarginLeft'])? $attr['BtnMarginLeft']:'10';
+
+		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{margin:".$margin_top."px ".$margin_right."px ".$margin_bottom."px ".$margin_left."px; }";
+	}
+
+	if(isset($attr['BtnPaddingTop']) || isset($attr['BtnPaddingRight']) || isset($attr['BtnPaddingBottom']) || isset($attr['BtnPaddingLeft'])){
+
+		$padding_top 	= isset($attr['BtnPaddingTop'])? $attr['BtnPaddingTop']:'4';
+		$padding_right   = isset($attr['BtnPaddingRight'])? $attr['BtnPaddingRight']:'10';
+		$padding_bottom  = isset($attr['BtnPaddingBottom'])? $attr['BtnPaddingBottom']:'4';
+		$padding_left 	= isset($attr['BtnPaddingLeft'])? $attr['BtnPaddingLeft']:'10';
+
+		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{padding:".$padding_top."px ".$padding_right."px ".$padding_bottom."px ".$padding_left."px; }";
+	}
+
+	if(isset($attr['hasbarBtnBgColor']) && !empty($attr['hasbarBtnBgColor'])){
+		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{background-color:".$attr['hasbarBtnBgColor']."; }";
+	}
+
+	if(isset($attr['hasbarBtnTxtColor']) && !empty($attr['hasbarBtnTxtColor'])){
+		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{color:".$attr['hasbarBtnTxtColor']."; }";
+	}
+
+	$style.="</style>";
+	echo $style;
 	return ob_get_clean();
 }
 
@@ -125,7 +155,31 @@ function hashbar_block_assets() {
 									'text' => 'Button',
 									'link' => '#'
 								),
-				)
+				),
+				'hashbarBtnStyle' => array(
+					'type' => 'string',
+					'default' => 'style_1'
+				),
+				'hashbarBtnRemove' => array(
+					'type' => 'string',
+					'default' => 'yes'
+				),
+				/*'BtnMarginTop' => array(
+					'type' => 'string',
+					'default' => '0'
+				),
+				'BtnMarginRight' => array(
+					'type' => 'string',
+					'default' => '10'
+				),
+				'BtnMarginBottom' => array(
+					'type' => 'string',
+					'default' => '0'
+				),
+				'BtnMarginLeft' => array(
+					'type' => 'string',
+					'default' => '10'
+				)*/
 			)
 		)
 	);

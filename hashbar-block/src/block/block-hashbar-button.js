@@ -57,6 +57,22 @@ registerBlockType("hashbar/hashbar-button", {
 			type:"number",
 			default:10
 		},
+		BtnPaddingTop:{
+			type: "number",
+			default: 4
+		},
+		BtnPaddingRight:{
+			type:"number",
+			default:10
+		},
+		BtnPaddingBottom:{
+			type:"number",
+			default:4
+		},
+		BtnPaddingLeft:{
+			type:"number",
+			default:10
+		},
 		hashbarBtnStyle:{
 			type:"string",
 			default:"style_1"
@@ -97,6 +113,22 @@ registerBlockType("hashbar/hashbar-button", {
 
 		const onChangeBtnMarginLeft = (newMarginLeft) => {
 			setAttributes({ BtnMarginLeft:newMarginLeft });
+		}
+
+		const onChangeBtnPaddingTop = (newPaddingTop) => {
+			setAttributes({ BtnPaddingTop:newPaddingTop });
+		}
+
+		const onChangeBtnPaddingRight = (newPaddingRight) => {
+			setAttributes({ BtnPaddingRight:newPaddingRight });
+		}
+
+		const onChangeBtnPaddingBottom = (newPaddingBottom) => {
+			setAttributes({ BtnPaddingBottom:newPaddingBottom });
+		}
+
+		const onChangeBtnPaddingLeft = (newPaddingLeft) => {
+			setAttributes({ BtnPaddingLeft:newPaddingLeft });
 		}
 
 		const onChangeContent = (newContent) => {
@@ -199,6 +231,33 @@ registerBlockType("hashbar/hashbar-button", {
 									onChange={onChangeBtnMarginLeft}
 								/>
 							</div>
+							<p>{__('Button Padding')}</p>
+							<div className="btn-margin-set" style={{display:"flex"}}>
+								<TextControl
+									help="top"
+									type="number"
+									value={attributes.BtnPaddingTop}
+									onChange={onChangeBtnPaddingTop}
+								/>
+								<TextControl
+									help="right"
+									type="number"
+									value={attributes.BtnPaddingRight}
+									onChange={onChangeBtnPaddingRight}
+								/>
+								<TextControl
+									help="bottom"
+									type="number"
+									value={attributes.BtnPaddingBottom}
+									onChange={onChangeBtnPaddingBottom}
+								/>
+								<TextControl
+									help="left"
+									type="number"
+									value={attributes.BtnPaddingLeft}
+									onChange={onChangeBtnPaddingLeft}
+								/>
+							</div>
 							<div className="panel-item">
 								<SelectControl
 							        label={__("Button Style")}
@@ -257,7 +316,11 @@ registerBlockType("hashbar/hashbar-button", {
 										marginTop: attributes.BtnMarginTop + "px",
 										marginRight: attributes.BtnMarginRight + "px",
 										marginBottom: attributes.BtnMarginBottom + "px",
-										marginLeft: attributes.BtnMarginLeft + "px"}}>
+										marginLeft: attributes.BtnMarginLeft + "px",
+										paddingTop: attributes.BtnPaddingTop + "px",
+										paddingRight: attributes.BtnPaddingRight + "px",
+										paddingBottom: attributes.BtnPaddingBottom + "px",
+										paddingLeft: attributes.BtnPaddingLeft + "px"}}>
 									{attributes.hasbarButton.text}
 								</a>
 							):""}
@@ -290,7 +353,11 @@ registerBlockType("hashbar/hashbar-button", {
 									marginTop: attributes.BtnMarginTop + "px",
 									marginRight: attributes.BtnMarginRight + "px",
 									marginBottom: attributes.BtnMarginBottom + "px",
-									marginLeft: attributes.BtnMarginLeft + "px"}}>
+									marginLeft: attributes.BtnMarginLeft + "px",
+									paddingTop: attributes.BtnPaddingTop + "px",
+									paddingRight: attributes.BtnPaddingRight + "px",
+									paddingBottom: attributes.BtnPaddingBottom + "px",
+									paddingLeft: attributes.BtnPaddingLeft + "px"}}>
 
 									{attributes.hasbarButton.text}
 								</a>
