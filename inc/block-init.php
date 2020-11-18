@@ -28,29 +28,48 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 
-function hashbar_block_render ($attr){
-	//var_dump($attr);
-	$btn_style_class = $attr['hashbarBtnStyle'] ? $attr['hashbarBtnStyle'] : 'style_1';
-	$style = "<style>";
+function hashbar_wpnb_check_post(){
+
+    if(isset($_GET['post'])){
+        $get_custom_post = get_post($_GET['post']);
+        $get_custom_post_type = $get_custom_post->post_type;
+    }
+
+    if((isset($_GET['post_type']) && $_GET['post_type'] == 'wphash_ntf_bar') || $get_custom_post_type == 'wphash_ntf_bar'){
+
+        return true;
+    }
+
+    return false;
+}
+
+/*function hashbar_block_render ($attr){
+	$post_id = (string) get_the_id();
+	$classes = sprintf("hash-post-%s",$post_id);
+	$btn_text = isset($attr['hasbarButton']) ? $attr['hasbarButton']['text'] : __("Button","hashbar");
+	$btn_link = isset($attr['hasbarButton']) ? $attr['hasbarButton']['link'] : "#";
+
+	$style ="";
+
 	ob_start()
 	?>
-		<?php if(isset($attr['hashbarBtnPosition'])): ?>
+		<?php if($attr['hashbarBtnPosition'] === 'before'): ?>
 			<p>
+				<?php if($attr['hashbarBtnRemove'] === 'yes'): ?>
+					<a class="ht_btn style_1 <?php echo esc_attr($classes); ?>" href="<?php echo esc_url($btn_link); ?>"><?php echo esc_html($btn_text); ?></a>
+				<?php endif; ?>
 				<?php if(isset($attr['hashbarContent']) && !empty($attr['hashbarContent'])): 
 					echo esc_html($attr['hashbarContent']); 
 				 endif; ?>
-				<?php if($attr['hashbarBtnRemove'] === 'yes'): ?>
-					<a class="ht_btn <?php echo esc_attr($btn_style_class); ?>" href="<?php echo $attr['hasbarButton'] ? esc_url($attr['hasbarButton']['link']):'#'; ?>"><?php echo esc_html($attr['hasbarButton']['text']); ?></a>
-				<?php endif; ?>
 			</p>
 		<?php else: ?>
 			<p>
-				<?php if($attr['hashbarBtnRemove'] === 'yes'): ?>
-					<a class="ht_btn <?php echo esc_attr($btn_style_class); ?>" href="<?php echo $attr['hasbarButton'] ? esc_url($attr['hasbarButton']['link']):'#'; ?>"><?php echo esc_html($attr['hasbarButton']['text']); ?></a>
-				<?php endif; ?>
 				<?php if(isset($attr['hashbarContent']) && !empty($attr['hashbarContent'])): 
 					echo esc_html($attr['hashbarContent']); 
-				 endif; ?>
+				endif; ?>
+				<?php if($attr['hashbarBtnRemove'] === 'yes'): ?>
+					<a class="ht_btn style_1 <?php echo esc_attr($classes); ?>" href="<?php echo esc_url($btn_link); ?>"><?php echo esc_html($btn_text); ?></a>
+				<?php endif; ?>
 			</p>
 		<?php endif; ?>
 	<?php
@@ -62,31 +81,45 @@ function hashbar_block_render ($attr){
 		$margin_bottom  = isset($attr['BtnMarginBottom'])? $attr['BtnMarginBottom']:'0';
 		$margin_left 	= isset($attr['BtnMarginLeft'])? $attr['BtnMarginLeft']:'10';
 
-		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{margin:".$margin_top."px ".$margin_right."px ".$margin_bottom."px ".$margin_left."px; }";
+		$style.= ".ht-notification-text .ht_btn.hash-post-".$post_id."{margin:".$margin_top."px ".$margin_right."px ".$margin_bottom."px ".$margin_left."px; }";
 	}
 
 	if(isset($attr['BtnPaddingTop']) || isset($attr['BtnPaddingRight']) || isset($attr['BtnPaddingBottom']) || isset($attr['BtnPaddingLeft'])){
 
-		$padding_top 	= isset($attr['BtnPaddingTop'])? $attr['BtnPaddingTop']:'4';
-		$padding_right   = isset($attr['BtnPaddingRight'])? $attr['BtnPaddingRight']:'10';
-		$padding_bottom  = isset($attr['BtnPaddingBottom'])? $attr['BtnPaddingBottom']:'4';
-		$padding_left 	= isset($attr['BtnPaddingLeft'])? $attr['BtnPaddingLeft']:'10';
+		$padding_top 	= isset($attr['BtnPaddingTop'])? $attr['BtnPaddingTop']:'10';
+		$padding_right   = isset($attr['BtnPaddingRight'])? $attr['BtnPaddingRight']:'30';
+		$padding_bottom  = isset($attr['BtnPaddingBottom'])? $attr['BtnPaddingBottom']:'10';
+		$padding_left 	= isset($attr['BtnPaddingLeft'])? $attr['BtnPaddingLeft']:'30';
 
-		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{padding:".$padding_top."px ".$padding_right."px ".$padding_bottom."px ".$padding_left."px; }";
+		$style.= ".ht-notification-text .ht_btn.hash-post-".$post_id."{padding:".$padding_top."px ".$padding_right."px ".$padding_bottom."px ".$padding_left."px; }";
 	}
 
 	if(isset($attr['hasbarBtnBgColor']) && !empty($attr['hasbarBtnBgColor'])){
-		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{background-color:".$attr['hasbarBtnBgColor']."; }";
+		$style.= ".ht-notification-text .ht_btn.hash-post-".$post_id."{background-color:".$attr['hasbarBtnBgColor']."; }";
 	}
 
 	if(isset($attr['hasbarBtnTxtColor']) && !empty($attr['hasbarBtnTxtColor'])){
-		$style.= ".ht-notification-text .ht_btn.".$btn_style_class."{color:".$attr['hasbarBtnTxtColor']."; }";
+		$style.= ".ht-notification-text .ht_btn.hash-post-".$post_id."{color:".$attr['hasbarBtnTxtColor']."; }";
 	}
 
-	$style.="</style>";
-	echo $style;
+	if(isset($attr['BtnBorderRadius']) && !empty($attr['BtnBorderRadius'])){
+		$style.= ".ht-notification-text .ht_btn.hash-post-".$post_id."{border-radius:".$attr['BtnBorderRadius']."px; }";
+	}
+
+	if(isset($attr['hasbarBtnFontSize']) && !empty($attr['hasbarBtnFontSize'])){
+		$style.= ".ht-notification-text .ht_btn.hash-post-".$post_id."{font-size:".$attr['hasbarBtnFontSize']."px; }";
+	}
+
+	if(strlen($style) > 0){
+		?>
+			<style type="text/css">
+				<?php echo $style; ?>
+			</style>
+		<?php
+	}
+
 	return ob_get_clean();
-}
+}*/
 
 function hashbar_block_assets() {
 	// Register block styles for both frontend + backend.
@@ -104,9 +137,6 @@ function hashbar_block_assets() {
 		array( 'wp-edit-blocks' ),
 		null
 	);
-
-	// Register Bootstrap styles
-	wp_enqueue_style('bootstrap-style',  'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap-grid.min.css');
 
 	// Register block editor script for backend.
 	wp_register_script(
@@ -146,44 +176,15 @@ function hashbar_block_assets() {
 			'editor_script' => 'hashbar-block-js',
 			// Enqueue blocks.editor.build.css in the editor only.
 			'editor_style'  => 'hashbar-block-editor-css',
-			//render block from server
-			'render_callback' => 'hashbar_block_render',
-			'attributes' => array(
-				'hasbarButton' => array(
-					'type'    => 'string',
-					'default' => array(
-									'text' => 'Button',
-									'link' => '#'
-								),
-				),
-				'hashbarBtnStyle' => array(
-					'type' => 'string',
-					'default' => 'style_1'
-				),
-				'hashbarBtnRemove' => array(
-					'type' => 'string',
-					'default' => 'yes'
-				),
-				/*'BtnMarginTop' => array(
-					'type' => 'string',
-					'default' => '0'
-				),
-				'BtnMarginRight' => array(
-					'type' => 'string',
-					'default' => '10'
-				),
-				'BtnMarginBottom' => array(
-					'type' => 'string',
-					'default' => '0'
-				),
-				'BtnMarginLeft' => array(
-					'type' => 'string',
-					'default' => '10'
-				)*/
-			)
 		)
 	);
 }
 
 // Hook: Block assets.
-add_action( 'init', 'hashbar_block_assets' );
+if(is_admin()){
+	if(hashbar_wpnb_check_post()){
+		add_action( 'init', 'hashbar_block_assets' );
+	}
+}else{
+	add_action( 'init', 'hashbar_block_assets' );
+}

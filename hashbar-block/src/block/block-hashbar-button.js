@@ -6,7 +6,7 @@ const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const { Fragment } = wp.element;
 const { Button, TextControl, TextareaControl, Dashicon, PanelBody, panelRow, FormToggle, RadioControl, SelectControl }= wp.components;
-const { InspectorControls, ColorPalette, RichText} = wp.editor;
+const { InspectorControls, ColorPalette, RichText, AlignmentToolbar, BlockControls} = wp.editor;
 
 
 /**`
@@ -15,14 +15,22 @@ const { InspectorControls, ColorPalette, RichText} = wp.editor;
  */
  
 registerBlockType("hashbar/hashbar-button", {
-	title: __("Hashbar Button"),
+	title: __("Hashbar Button","hashbar"),
 	icon: "editor-bold",
 	category: "common",
 	keywords: [
-		__("hashbar"),
-		__("button"),
+		__("hashbar", "hashbar"),
+		__("button", "hashbar"),
 	],
+	example: {
+		attributes: {
+			value: __( 'Hashbar Button', 'hashbar' )
+		},
+	},
 	attributes: {
+		textAlignment: {
+			type: 'string',
+		},
 		hasbarButton:{
 			type:"object",
 			default:{
@@ -30,16 +38,20 @@ registerBlockType("hashbar/hashbar-button", {
 				link:'#'
 			}
 		},
+		hasbarBtnFontSize:{
+			type:"number",
+			default:18
+		},
 		hashbarBtnRemove:{
 			type:"string",
 			default:'yes'
 		},
-		hashbarBtnPosition:{
-			type:"string",
-			default:"before"
-		},
 		hashbarContent:{
 			type:"string"
+		},
+		BtnBorderRadius:{
+			type:"number",
+			default:3
 		},
 		BtnMarginTop:{
 			type: "number",
@@ -59,26 +71,23 @@ registerBlockType("hashbar/hashbar-button", {
 		},
 		BtnPaddingTop:{
 			type: "number",
-			default: 4
+			default: 10
 		},
 		BtnPaddingRight:{
 			type:"number",
-			default:10
+			default:30
 		},
 		BtnPaddingBottom:{
 			type:"number",
-			default:4
+			default:10
 		},
 		BtnPaddingLeft:{
 			type:"number",
-			default:10
-		},
-		hashbarBtnStyle:{
-			type:"string",
-			default:"style_1"
+			default:30
 		},
 		hasbarBtnBgColor:{
 			type:"string",
+			default:"#fdd835"
 		},
 		hasbarBtnTxtColor:{
 			type:"string",
@@ -87,9 +96,17 @@ registerBlockType("hashbar/hashbar-button", {
 
 	edit: ({ attributes, setAttributes, className, isSelected }) => {
 
+		const alignmentClass = (attributes.textAlignment != null) ? 'has-text-align-' + attributes.textAlignment : '';
+
 		const onChangBtnText = (newBtnText) => {
 			const newhasbarButton = {...attributes.hasbarButton};
 			newhasbarButton.text = newBtnText;
+			setAttributes({hasbarButton:newhasbarButton});
+		}
+
+		const onChangBtnLink = (newBtnLink) => {
+			const newhasbarButton = {...attributes.hasbarButton};
+			newhasbarButton.link = newBtnLink;
 			setAttributes({hasbarButton:newhasbarButton});
 		}
 
@@ -99,52 +116,52 @@ registerBlockType("hashbar/hashbar-button", {
 			setAttributes({hashbarBtnRemove:changeBtnValue})
 		}
 
+		const onChangeBtnFontSize = (newFontSize) => {
+			setAttributes({hasbarBtnFontSize:parseInt(newFontSize)});
+		}
+
+		const onChangeBtnBordeRadius = (newBorderRadius) => {
+			setAttributes({BtnBorderRadius:parseInt(newBorderRadius)});
+		}
+
 		const onChangeBtnMarginTop = (newMarginTop) => {
-			setAttributes({ BtnMarginTop:newMarginTop });
+			setAttributes({ BtnMarginTop:parseInt(newMarginTop) });
 		}
 
 		const onChangeBtnMarginRight = (newMarginRight) => {
-			setAttributes({ BtnMarginRight:newMarginRight });
+			setAttributes({ BtnMarginRight:parseInt(newMarginRight) });
 		}
 
 		const onChangeBtnMarginBottom = (newMarginBottom) => {
-			setAttributes({ BtnMarginBottom:newMarginBottom });
+			setAttributes({ BtnMarginBottom:parseInt(newMarginBottom) });
 		}
 
 		const onChangeBtnMarginLeft = (newMarginLeft) => {
-			setAttributes({ BtnMarginLeft:newMarginLeft });
+			setAttributes({ BtnMarginLeft:parseInt(newMarginLeft) });
 		}
 
 		const onChangeBtnPaddingTop = (newPaddingTop) => {
-			setAttributes({ BtnPaddingTop:newPaddingTop });
+			setAttributes({ BtnPaddingTop:parseInt(newPaddingTop) });
 		}
 
 		const onChangeBtnPaddingRight = (newPaddingRight) => {
-			setAttributes({ BtnPaddingRight:newPaddingRight });
+			setAttributes({ BtnPaddingRight:parseInt(newPaddingRight) });
 		}
 
 		const onChangeBtnPaddingBottom = (newPaddingBottom) => {
-			setAttributes({ BtnPaddingBottom:newPaddingBottom });
+			setAttributes({ BtnPaddingBottom:parseInt(newPaddingBottom) });
 		}
 
 		const onChangeBtnPaddingLeft = (newPaddingLeft) => {
-			setAttributes({ BtnPaddingLeft:newPaddingLeft });
+			setAttributes({ BtnPaddingLeft:parseInt(newPaddingLeft) });
 		}
 
 		const onChangeContent = (newContent) => {
 			setAttributes({hashbarContent:newContent})
 		}
 
-		const onChangePosition = (newBtnPositon) => {
-			setAttributes({hashbarBtnPosition:newBtnPositon});
-		}
-
 		const onChangeBtnMargin = (newBtnMargin) => {
 			setAttributes({hashbarBtnMargin:newBtnMargin})
-		}
-
-		const onChangeBtnStyle = (newBtnStyle) => {
-			setAttributes({ hashbarBtnStyle:newBtnStyle })
 		}
 
 		const onChangeButnBgColor = (newBtnBgColor) => {
@@ -178,19 +195,9 @@ registerBlockType("hashbar/hashbar-button", {
 							onChange={ToggelButton}/>
 						</div>
 						<div className="panel-item">
-							<RadioControl
-	                        label="Select Button Positon"
-	                        selected={ attributes.hashbarBtnPosition }
-	                        options={[
-	                            { label: 'Before Content', value: 'before' },
-	                            { label: 'After Cotent', value: 'after' },
-	                        ]}
-	                        onChange={onChangePosition} />
-	                    </div>
-						<div className="panel-item">
 							<TextControl
-								label="Button Text"
-								placeholder="give button name"
+								label={__("Button Text", "hashbar")}
+								placeholder={__("give button name", "hashbar")}
 								value={attributes.hasbarButton.text}
 								onChange={onChangBtnText}
 								style={{ marginBottom: 20}}
@@ -198,82 +205,93 @@ registerBlockType("hashbar/hashbar-button", {
 						</div>
 						<div className="panel-item">
 							<TextControl
-								label="Button Link"
-								placeholder="Link"
+								label={__("Button Link", "hashbar")}
+								placeholder={__("Link", "hashbar")}
+								value={attributes.hasbarButton.link}
+								onChange={onChangBtnLink}
 								style={{ marginBottom: 20}}
 							/>
 						</div>
 						<div className="panel-item">
-							<p>{__('Button Margin')}</p>
+							<p>{__("Button Margin", "hashbar")}</p>
 							<div className="btn-margin-set" style={{display:"flex"}}>
 								<TextControl
-									help="top"
+									help={__("top", "hashbar")}
 									type="number"
 									value={attributes.BtnMarginTop}
 									onChange={onChangeBtnMarginTop}
 								/>
 								<TextControl
-									help="right"
+									help={__("right", "hashbar")}
 									type="number"
 									value={attributes.BtnMarginRight}
 									onChange={onChangeBtnMarginRight}
 								/>
 								<TextControl
-									help="bottom"
+									help={__("bottom", "hashbar")}
 									type="number"
 									value={attributes.BtnMarginBottom}
 									onChange={onChangeBtnMarginBottom}
 								/>
 								<TextControl
-									help="left"
+									help={__("left", "hashbar")}
 									type="number"
 									value={attributes.BtnMarginLeft}
 									onChange={onChangeBtnMarginLeft}
 								/>
 							</div>
-							<p>{__('Button Padding')}</p>
-							<div className="btn-margin-set" style={{display:"flex"}}>
+							<div className="panel-item">
+								<p>{__("Button Padding", "hashbar")}</p>
+								<div className="btn-margin-set" style={{display:"flex"}}>
+									<TextControl
+										help="top"
+										type="number"
+										value={attributes.BtnPaddingTop}
+										onChange={onChangeBtnPaddingTop}
+									/>
+									<TextControl
+										help="right"
+										type="number"
+										value={attributes.BtnPaddingRight}
+										onChange={onChangeBtnPaddingRight}
+									/>
+									<TextControl
+										help="bottom"
+										type="number"
+										value={attributes.BtnPaddingBottom}
+										onChange={onChangeBtnPaddingBottom}
+									/>
+									<TextControl
+										help="left"
+										type="number"
+										value={attributes.BtnPaddingLeft}
+										onChange={onChangeBtnPaddingLeft}
+									/>
+								</div>
+							</div>
+							<div className="panel-item">
+								<p>Button Border Radius</p>
 								<TextControl
-									help="top"
-									type="number"
-									value={attributes.BtnPaddingTop}
-									onChange={onChangeBtnPaddingTop}
-								/>
-								<TextControl
-									help="right"
-									type="number"
-									value={attributes.BtnPaddingRight}
-									onChange={onChangeBtnPaddingRight}
-								/>
-								<TextControl
-									help="bottom"
-									type="number"
-									value={attributes.BtnPaddingBottom}
-									onChange={onChangeBtnPaddingBottom}
-								/>
-								<TextControl
-									help="left"
-									type="number"
-									value={attributes.BtnPaddingLeft}
-									onChange={onChangeBtnPaddingLeft}
+									type={__("number", "hashbar")}
+									value={attributes.BtnBorderRadius}
+									onChange={onChangeBtnBordeRadius}
+									style={{width: "60px"}}
 								/>
 							</div>
 							<div className="panel-item">
-								<SelectControl
-							        label={__("Button Style")}
-							        value={ attributes.hashbarBtnStyle }
-							        options={ [
-							            { label: 'Style 1', value: 'style_1' },
-							            { label: 'Style 2', value: 'style_2' }
-							        ] }
-							        onChange={ onChangeBtnStyle }
-							    />
+								<p>{__("Button Font Size", "hashbar")}</p>
+								<TextControl
+									type={__("number", "hashbar")}
+									value={attributes.hasbarBtnFontSize}
+									onChange={onChangeBtnFontSize}
+									style={{width: "60px"}}
+								/>
 							</div>
 						</div>
 						<div className="panel-item">
 							<p>
 								<strong>
-									Button Background Color
+									{__("Button Background Color", "hashbar")}
 									<span
 										style={{
 											...styles.selectedColorDisplay,
@@ -290,7 +308,7 @@ registerBlockType("hashbar/hashbar-button", {
 						<div className="panel-item">
 							<p>
 								<strong>
-									Button Text Color
+									{__("Button Text Color", "hashbar")}
 									<span
 										style={{
 											...styles.hasbarBtnTxtColor,
@@ -306,72 +324,73 @@ registerBlockType("hashbar/hashbar-button", {
 						</div>
 					</PanelBody>
 				</InspectorControls>
-				<div className={className}>
-					{attributes.hashbarBtnPosition === 'before' ? (
-						<div style={{display:"flex"}}>
-							{attributes.hashbarBtnRemove == 'yes' ? (
-								<a className={"ht_btn " +attributes.hashbarBtnStyle} href={attributes.hasbarButton.link}
-									style={{backgroundColor:attributes.hasbarBtnBgColor, 
-										color:attributes.hasbarBtnTxtColor,
-										marginTop: attributes.BtnMarginTop + "px",
-										marginRight: attributes.BtnMarginRight + "px",
-										marginBottom: attributes.BtnMarginBottom + "px",
-										marginLeft: attributes.BtnMarginLeft + "px",
-										paddingTop: attributes.BtnPaddingTop + "px",
-										paddingRight: attributes.BtnPaddingRight + "px",
-										paddingBottom: attributes.BtnPaddingBottom + "px",
-										paddingLeft: attributes.BtnPaddingLeft + "px"}}>
-									{attributes.hasbarButton.text}
-								</a>
-							):""}
+				<BlockControls>
+					<AlignmentToolbar
+						value={attributes.textAlignment}
+						onChange={(newalign) => setAttributes({ textAlignment: newalign })}
+					/>
+				</BlockControls>
+				<div className={alignmentClass}>
+					<RichText
+		                className={ className }
+		                value={ attributes.hashbarContent } 
+		                onChange={ onChangeContent }
+		                placeholder={ __( 'Content', "hashbar") }
+		                keepPlaceholderOnFocus={true}
+		                style={{margin  :"0px",
+		                		padding :"0px",
+		                		display :"inline-block"}}
+		            />
+					{attributes.hashbarBtnRemove === 'yes' ? (
+						<a className="ht_btn" href={attributes.hasbarButton.link}
+							style={{backgroundColor:attributes.hasbarBtnBgColor, 
+							color        : attributes.hasbarBtnTxtColor,
+							marginTop    : attributes.BtnMarginTop + "px",
+							marginRight  : attributes.BtnMarginRight + "px",
+							marginBottom : attributes.BtnMarginBottom + "px",
+							marginLeft   : attributes.BtnMarginLeft + "px",
+							paddingTop   : attributes.BtnPaddingTop + "px",
+							paddingRight : attributes.BtnPaddingRight + "px",
+							paddingBottom: attributes.BtnPaddingBottom + "px",
+							paddingLeft  : attributes.BtnPaddingLeft + "px",
+							borderRadius : attributes.BtnBorderRadius + "px",
+							fontSize     : attributes.hasbarBtnFontSize + "px"}}
+						>
 
-							<RichText
-				                tagName="p"
-				                className={ className }
-				                value={ attributes.hashbarContent } 
-				                onChange={ onChangeContent }
-				                placeholder={ __( 'Content' ) }
-				                style={{margin:"0px",
-				                		padding:"0px"}}
-				            />
-						</div>
-					):(
-						<div style={{display:"flex"}}>
-							<RichText
-				                tagName="p"
-				                className={ className }
-				                value={ attributes.hashbarContent } 
-				                onChange={ onChangeContent }
-				                placeholder={ __( 'Content' ) }
-				                style={{margin:"0px",
-				                		padding:"0px"}}
-				            />
-							{attributes.hashbarBtnRemove === 'yes' ? (
-								<a className={"ht_btn "+attributes.hashbarBtnStyle} href={attributes.hasbarButton.link}
-									style={{backgroundColor:attributes.hasbarBtnBgColor, 
-									color:attributes.hasbarBtnTxtColor,
-									marginTop: attributes.BtnMarginTop + "px",
-									marginRight: attributes.BtnMarginRight + "px",
-									marginBottom: attributes.BtnMarginBottom + "px",
-									marginLeft: attributes.BtnMarginLeft + "px",
-									paddingTop: attributes.BtnPaddingTop + "px",
-									paddingRight: attributes.BtnPaddingRight + "px",
-									paddingBottom: attributes.BtnPaddingBottom + "px",
-									paddingLeft: attributes.BtnPaddingLeft + "px"}}>
-
-									{attributes.hasbarButton.text}
-								</a>
-							):""}
-						</div>
-					)}
+							{attributes.hasbarButton.text}
+						</a>
+					):""}
 				</div>
 			</Fragment>
 		);
 	},
 
 	save: ({ attributes }) => {
-		
-		return null;
+		const alignmentClass = (attributes.textAlignment != null) ? 'has-text-align-' + attributes.textAlignment : '';
+		return(
+			<div className={alignmentClass+" hashbar-free-wraper"}>
+				<RichText.Content tagName="p" value={ attributes.hashbarContent } />
+				{attributes.hashbarBtnRemove === 'yes' ? (
+					<a className="ht_btn" href={attributes.hasbarButton.link}
+						style={{backgroundColor:attributes.hasbarBtnBgColor, 
+						color        : attributes.hasbarBtnTxtColor,
+						marginTop    : attributes.BtnMarginTop + "px",
+						marginRight  : attributes.BtnMarginRight + "px",
+						marginBottom : attributes.BtnMarginBottom + "px",
+						marginLeft   : attributes.BtnMarginLeft + "px",
+						paddingTop   : attributes.BtnPaddingTop + "px",
+						paddingRight : attributes.BtnPaddingRight + "px",
+						paddingBottom: attributes.BtnPaddingBottom + "px",
+						paddingLeft  : attributes.BtnPaddingLeft + "px",
+						borderRadius : attributes.BtnBorderRadius + "px",
+						fontSize     : attributes.hasbarBtnFontSize + "px"}}
+					>
+
+						{attributes.hasbarButton.text}
+					</a>
+				):""}
+			</div>
+		)
 
 	},
 });

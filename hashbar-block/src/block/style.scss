@@ -4,4 +4,21 @@
  * CSS for both Frontend+Backend.
  */
 
- @import 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap-grid.min.css';
+.wp-block-hashbar-hashbar-button p {
+    display: inline-block;
+}
+
+.hashbar-free-wraper{
+	display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.has-text-align-center{
+	justify-content: center;
+}
+.has-text-align-left{
+	justify-content: flex-start;
+}
+.has-text-align-right{
+	justify-content: flex-end;
+}

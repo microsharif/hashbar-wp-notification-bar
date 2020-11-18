@@ -79,6 +79,12 @@ Needs assistance to use this plugin?
 Feel free to [Contact us](https://htplugins.com/contact-us/)
 
 == Changelog ==
+= Version: 1.1.4 - Date: 2020-10-25 =
+* Add content margin and padding option.
+* Enable gutenbeg block.
+* Add hashbar button shortcode as gutenberg block in block editor.
+
+== Changelog ==
 = Version: 1.1.1 - Date: 2020-04-25 =
 * Divi conflict issue solved.
 * Mobile body Extra space issue solved. (thanks to mikeydiamonds)
